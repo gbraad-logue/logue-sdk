@@ -86,7 +86,8 @@ for o in "$@"; do
 done
 
 # Build actual image
-docker build --build-arg build=${BUILD_ID} --build-arg version=${VERSION} -t ${IMAGE_NAME}:${VERSION} -t ${IMAGE_NAME}:latest "${APP_DIR}"
+podman build --format docker --build-arg build=${BUILD_ID} --build-arg version=${VERSION} -t ${IMAGE_NAME}:${VERSION} -t ${IMAGE_NAME}:latest "${APP_DIR}"
+
 res=$?
 if [ $res -ne 0 ]; then
     echo "Error: Failed to build docker image (${res})"
@@ -95,6 +96,6 @@ fi
 
 # Cleanup build stage images, leaving only the flattened final image
 if [ -z "${OPT_NO_PRUNING}" ]; then
-   docker image prune -f -a --filter label=jp.co.korg.imgid=logue-sdk-dev-env --filter label=stage=builder --filter label=build=${BUILD_ID}
+   podman image prune -f -a --filter label=jp.co.korg.imgid=logue-sdk-dev-env --filter label=stage=builder --filter label=build=${BUILD_ID}
 fi
 
